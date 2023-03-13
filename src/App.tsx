@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from 'react'
+import { Link, useRoutes } from 'react-router-dom'
+import { useAppSelector, useAppDispatch } from './store'
+import routes from './router'
+import { changeNameAction } from './store/modules/counters'
+import AppHeader from './components/app-header'
+import AppFooter from './components/app-footer'
 
 function App() {
+  const { count, name } = useAppSelector((state) => {
+    return {
+      count: state.counter.count,
+      name: state.counter.name
+    }
+  })
+
+  const dispatch = useAppDispatch()
+  const handleChangeName = () => {
+    dispatch(changeNameAction('jianlai'))
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AppHeader />
+      <Suspense fallback="loading">
+        <div className="main">{useRoutes(routes)}</div>
+      </Suspense>
+      <AppFooter />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
